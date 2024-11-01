@@ -1,0 +1,33 @@
+name: Lint and Format (PR)
+on:
+  pull_request:
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Install pnpm
+        run: npm install --global pnpm@latest
+      - name: Install dev dependencies
+        run: pnpm install --dev
+      - name: Install dependencies
+        run: pnpm install
+      - name: Format with Prettier
+        run: pnpm format --write .
+      - name: Check for modified files
+        id: modified-check
+        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
+      - name: Push formatting changes
+        if: steps.modified-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'Github Actions'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Formatted with Prettier"
+          git push
+      - name: Analyze with ESLint
+        run: pnpm lint
