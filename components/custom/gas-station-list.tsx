@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useGasStationSortContext } from '@/components/custom/gas-station-sort-provider';
 import { LoadingSpinner } from '@/components/custom/loading-spinner';
+
 interface PriceInfo {
   timestamp: number;
   price: number;
@@ -41,6 +42,7 @@ export function GasStationList() {
   const [stations, setStations] = useState<GasStation[]>([]);
   const [sortedStations, setSortedStations] = useState<GasStation[]>([]);
   const [visibleStations, setVisibleStations] = useState<GasStation[]>([]);
+  const visibleStationsCount = useRef(6);
   const [loading, setLoading] = useState(true);
   const { sortBy } = useGasStationSortContext();
 
@@ -65,14 +67,15 @@ export function GasStationList() {
   }, [stations, sortBy]);
 
   useEffect(() => {
-    setVisibleStations(sortedStations.slice(0, 6));
+    setVisibleStations(sortedStations.slice(0, visibleStationsCount.current));
   }, [sortedStations]);
 
   const loadMore = () => {
     setVisibleStations((prev) => [
       ...prev,
-      ...stations.slice(prev.length, prev.length + 6),
+      ...sortedStations.slice(prev.length, prev.length + 6),
     ]);
+    visibleStationsCount.current += 6;
   };
 
   const formatPrice = (currencySymbol: string, priceInfo: PriceInfo | null) => {
