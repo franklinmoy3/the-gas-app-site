@@ -20,6 +20,7 @@ export function Footer({ className }: { className?: string }) {
           rel="noopener noreferrer"
         >
           <GitHubLogoIcon className="h-6 w-6" />
+          <span className="sr-only">GitHub</span>
         </a>
         <a
           href="https://www.linkedin.com/in/franklin-d-moy/"
@@ -27,6 +28,7 @@ export function Footer({ className }: { className?: string }) {
           rel="noopener noreferrer"
         >
           <LinkedInLogoIcon className="h-6 w-6" />
+          <span className="sr-only">LinkedIn</span>
         </a>
       </div>
     </footer>

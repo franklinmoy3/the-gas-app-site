@@ -17,7 +17,11 @@ export function SortOptions() {
     <RadioGroup value={sortBy} onValueChange={setSortBy}>
       {sortOptions.map((option) => (
         <div key={option.value} className="flex items-center space-x-2">
-          <RadioGroupItem value={option.value} id={option.value} />
+          <RadioGroupItem
+            aria-label={option.label}
+            value={option.value}
+            id={option.value}
+          />
           <Label htmlFor={option.value}>{option.label}</Label>
         </div>
       ))}
