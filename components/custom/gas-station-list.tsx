@@ -5,6 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useGasStationSortContext } from '@/components/custom/gas-station-sort-provider';
 import { LoadingSpinner } from '@/components/custom/loading-spinner';
+import {
+  Coordinates,
+  computeGreatCircleDistance,
+} from '@/lib/greatCircleDistance';
+import { useGeolocationContext } from '@/components/custom/geolocation-provider';
 
 interface PriceInfo {
   timestamp: number;
@@ -18,6 +23,8 @@ interface GasStation {
   city: string;
   state: string;
   postalCode: string;
+  latitude: number;
+  longitude: number;
   currencySymbol: string;
   regularPrice: PriceInfo | null;
   midGradePrice: PriceInfo | null;
@@ -25,14 +32,26 @@ interface GasStation {
   dieselPrice: PriceInfo | null;
 }
 
-function sortStations(stations: GasStation[], sortBy: string) {
+function sortStations(
+  position: Coordinates | null | undefined,
+  stations: GasStation[],
+  sortBy: string,
+) {
   return stations.sort((a, b) => {
-    if (sortBy === 'name') {
-      return a.name.localeCompare(b.name);
-    } else if (sortBy === 'price' || sortBy === 'price-desc') {
+    if (sortBy === 'price' || sortBy === 'price-desc') {
       const aPrice = a.regularPrice ? a.regularPrice.price : Infinity;
       const bPrice = b.regularPrice ? b.regularPrice.price : Infinity;
       return sortBy === 'price' ? aPrice - bPrice : bPrice - aPrice;
+    } else if (sortBy === 'distance' && position) {
+      const distanceA = computeGreatCircleDistance(position, {
+        latitude: a.latitude,
+        longitude: a.longitude,
+      });
+      const distanceB = computeGreatCircleDistance(position, {
+        latitude: b.latitude,
+        longitude: b.longitude,
+      });
+      return distanceA - distanceB;
     }
     return 0;
   });
@@ -46,6 +65,7 @@ export function GasStationList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { sortBy } = useGasStationSortContext();
+  const { position } = useGeolocationContext();
 
   useEffect(() => {
     fetch(
@@ -53,7 +73,7 @@ export function GasStationList() {
     )
       .then((response) => response.json())
       .then((data) => {
-        setStations(data);
+        setStations(sortStations(position, data, sortBy));
         setLoading(false);
       })
       .catch((error) => {
@@ -61,12 +81,12 @@ export function GasStationList() {
         setError('Something went wrong. Please try again later.');
         setLoading(false);
       });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const sortedStations = sortStations([...stations], sortBy);
-    setSortedStations(sortedStations);
-  }, [stations, sortBy]);
+    const stationsSorted = sortStations(position, [...stations], sortBy);
+    setSortedStations(stationsSorted);
+  }, [position, stations, sortBy]);
 
   useEffect(() => {
     setVisibleStations(sortedStations.slice(0, visibleStationsCount.current));

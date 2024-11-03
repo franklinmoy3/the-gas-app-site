@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { LocationInput } from '@/components/custom/location-input';
+import { SortOptions } from '@/components/custom/sort-options';
+import { ThemeSelector } from '@/components/custom/theme-selector';
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
-import { SortOptions } from '@/components/custom/sort-options';
-import { ThemeSelector } from '@/components/custom/theme-selector';
+import { useState } from 'react';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,6 +29,10 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="right">
             <SheetTitle />
+            <div className="mt-6 flex flex-col space-y-4">
+              <h2 className="text-lg font-semibold">Location</h2>
+              <LocationInput />
+            </div>
             <div className="mt-6 flex flex-col space-y-4">
               <h2 className="text-lg font-semibold">Sort Options</h2>
               <SortOptions />

@@ -11,7 +11,19 @@ export function Footer({ className }: { className?: string }) {
         </strong>{' '}
         and might be different at the pump.
       </p>
-      <p className="mt-1">A hobby project by Franklin Moy.</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Is your Costco or Sam&apos;s Club missing? Let me know on{' '}
+        <a
+          className="underline"
+          href="https://github.com/franklinmoy3/the-gas-app-site/issues"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+        .
+      </p>
+      <p className="mt-2">A hobby project by Franklin Moy.</p>
       <p className="mt-1">Proudly Open Source. Contributions welcome.</p>
       <div className="mt-2 flex justify-center gap-2">
         <a
