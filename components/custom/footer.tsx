@@ -1,8 +1,9 @@
 import { GitHubLogoIcon, LinkedInLogoIcon } from '@radix-ui/react-icons';
+import { cn } from '@/lib/utils';
 
-export function Footer() {
+export function Footer({ className }: { className?: string }) {
   return (
-    <footer className="border-t bg-background p-4 text-center">
+    <footer className={cn('border-t bg-background p-4 text-center', className)}>
       <p className="text-sm text-muted-foreground">
         Prices listed are{' '}
         <strong>
@@ -18,14 +19,14 @@ export function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <GitHubLogoIcon />
+          <GitHubLogoIcon className="h-6 w-6" />
         </a>
         <a
           href="https://www.linkedin.com/in/franklin-d-moy/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <LinkedInLogoIcon />
+          <LinkedInLogoIcon className="h-6 w-6" />
         </a>
       </div>
     </footer>
