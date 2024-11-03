@@ -44,6 +44,7 @@ export function GasStationList() {
   const [visibleStations, setVisibleStations] = useState<GasStation[]>([]);
   const visibleStationsCount = useRef(6);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { sortBy } = useGasStationSortContext();
 
   useEffect(() => {
@@ -57,6 +58,7 @@ export function GasStationList() {
       })
       .catch((error) => {
         console.error('Error fetching gas stations:', error);
+        setError('Something went wrong. Please try again later.');
         setLoading(false);
       });
   }, []);
@@ -104,6 +106,10 @@ export function GasStationList() {
 
   if (loading) {
     return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <div className="text-center">{error}</div>;
   }
 
   return (
