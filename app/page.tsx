@@ -11,8 +11,8 @@ import { GeolocationProvider } from '@/components/custom/geolocation-provider';
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      <GeolocationProvider>
-        <GasStationSortProvider>
+      <GasStationSortProvider>
+        <GeolocationProvider>
           <Navbar />
           <div className="relative flex flex-1">
             <Sidebar className="fixed left-0 top-[57px] mt-2 hidden h-[calc(100vh-57px)] md:block" />
@@ -24,8 +24,8 @@ export default function Home() {
               </div>
             </main>
           </div>
-        </GasStationSortProvider>
-      </GeolocationProvider>
+        </GeolocationProvider>
+      </GasStationSortProvider>
       <Footer className="md:ml-64" />
     </div>
   );

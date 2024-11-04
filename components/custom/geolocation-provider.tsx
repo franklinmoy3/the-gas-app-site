@@ -9,9 +9,17 @@ import {
 } from 'react';
 import { Coordinates } from '@/lib/greatCircleDistance';
 
+const defaultPosition: Coordinates = {
+  // We'll use San Francisco as the default location
+  latitude: 37.7749,
+  longitude: -122.4194,
+};
+
 type GeolocationContextType = {
-  position: Coordinates | null | undefined;
-  setPosition: (position: Coordinates | null) => void;
+  userAllowedGeolocation: boolean;
+  position: Coordinates;
+  zipCode: number;
+  setZipCode: (zipCode: number) => void;
 };
 
 const GeolocationContext = createContext<GeolocationContextType | undefined>(
@@ -19,11 +27,16 @@ const GeolocationContext = createContext<GeolocationContextType | undefined>(
 );
 
 export function GeolocationProvider({ children }: { children: ReactNode }) {
-  const [position, setPosition] = useState<Coordinates | null | undefined>(
-    undefined,
-  );
+  const [position, setPosition] = useState<Coordinates>({
+    latitude: Infinity,
+    longitude: Infinity,
+  });
+  const [zipCode, setZipCode] = useState<number>(94103);
+  const [userAllowedGeolocation, setUserAllowedGeolocation] =
+    useState<boolean>(false);
 
   const geolocationSuccessCallback = (position: GeolocationPosition) => {
+    setUserAllowedGeolocation(true);
     setPosition({
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
@@ -32,7 +45,8 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
 
   const geolocationErrorCallback = (error: GeolocationPositionError) => {
     console.warn(error);
-    setPosition(null);
+    // Maybe consider paying for an IP geolocation service to set a fallback position.
+    setPosition(defaultPosition);
   };
 
   useEffect(() => {
@@ -45,7 +59,14 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <GeolocationContext.Provider value={{ position, setPosition }}>
+    <GeolocationContext.Provider
+      value={{
+        position,
+        zipCode,
+        userAllowedGeolocation,
+        setZipCode,
+      }}
+    >
       {children}
     </GeolocationContext.Provider>
   );

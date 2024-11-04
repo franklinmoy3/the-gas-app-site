@@ -27,7 +27,7 @@ export function Navbar() {
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right">
+          <SheetContent side="right" aria-describedby={undefined}>
             <SheetTitle />
             <div className="mt-6 flex flex-col space-y-4">
               <h2 className="text-lg font-semibold">Location</h2>
