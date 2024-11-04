@@ -12,7 +12,7 @@ export function GeolocationInput() {
     userAllowedGeolocation,
     zipCode,
     zipCodeLoading,
-    badZipCode,
+    errorMessage,
     handleZipCodeChange,
   } = useGeolocationContext();
   const [value, setValue] = useState<string>(zipCode.toString());
@@ -51,7 +51,7 @@ export function GeolocationInput() {
             value={value}
             onChange={handleChange}
             className="rounded-none border-gray-300 pr-10 shadow-sm [appearance:textfield] focus:border-gray-400 focus:ring-gray-400 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            placeholder="Enter your ZIP code..."
+            placeholder="Enter a ZIP code..."
           />
           {zipCodeLoading && (
             <div className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-inherit">
@@ -71,8 +71,8 @@ export function GeolocationInput() {
           )}
         </form>
       )}
-      {badZipCode && (
-        <div className="mt-1 text-sm text-red-500">Invalid ZIP code</div>
+      {errorMessage && (
+        <div className="mt-1 text-sm text-red-500">{errorMessage}</div>
       )}
     </div>
   );

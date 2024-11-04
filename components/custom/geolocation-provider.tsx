@@ -20,7 +20,7 @@ type GeolocationContextType = {
   position: Coordinates;
   zipCode: number;
   zipCodeLoading: boolean;
-  badZipCode: boolean;
+  errorMessage: string | null;
   handleZipCodeChange: (zipCode: number) => void;
 };
 
@@ -35,26 +35,29 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   });
   const [zipCode, setZipCode] = useState<number>(94103);
   const [zipCodeLoading, setZipCodeLoading] = useState<boolean>(false);
-  const [badZipCode, setBadZipCode] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [userAllowedGeolocation, setUserAllowedGeolocation] =
     useState<boolean>(false);
 
   const handleZipCodeChange = (zipCode: number) => {
     setZipCodeLoading(true);
+    // I don't really trust Nominatim since some of its answers were incorrect.
+    // We might need to build our own ZIP->coordinates database to be more accurate.
     fetch(
       `https://nominatim.openstreetmap.org/search?country=us&postalcode=${zipCode}&format=jsonv2`,
+      { cache: 'force-cache' },
     )
       .then((res) => res.json())
       .then((data) => {
         if (data.length > 0) {
           setZipCode(zipCode);
-          setBadZipCode(false);
+          setErrorMessage(null);
           setPosition({
             latitude: data[0].lat,
             longitude: data[0].lon,
           });
         } else {
-          setBadZipCode(true);
+          setErrorMessage('Invalid ZIP code');
         }
       })
       .finally(() => {
@@ -67,6 +70,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     const longitude = position.coords.longitude;
     fetch(
       `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=jsonv2`,
+      { cache: 'force-cache' },
     )
       .then((res) => res.json())
       .then((data) => {
@@ -100,7 +104,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
         position,
         zipCode,
         zipCodeLoading,
-        badZipCode,
+        errorMessage,
         userAllowedGeolocation,
         handleZipCodeChange,
       }}
