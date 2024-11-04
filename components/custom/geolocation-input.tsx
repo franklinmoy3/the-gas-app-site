@@ -16,6 +16,7 @@ export function GeolocationInput() {
     handleZipCodeChange,
   } = useGeolocationContext();
   const [value, setValue] = useState<string>(zipCode.toString());
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   useEffect(() => {
     setValue(zipCode.toString());
@@ -23,6 +24,7 @@ export function GeolocationInput() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError(null);
     if (!zipCodeLoading) {
       handleZipCodeChange(parseInt(value, 10));
     }
@@ -31,6 +33,11 @@ export function GeolocationInput() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.replace(/\D/g, '').slice(0, 5);
     setValue(newValue);
+  };
+
+  const handleInvalid = (e: React.FormEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setValidationError('Invalid ZIP code');
   };
 
   return (
@@ -47,9 +54,12 @@ export function GeolocationInput() {
             type="text"
             inputMode="numeric"
             pattern="[0-9]{5}"
+            minLength={5}
             maxLength={5}
+            required
             value={value}
             onChange={handleChange}
+            onInvalid={handleInvalid}
             className="rounded-none border-gray-300 pr-10 shadow-sm [appearance:textfield] focus:border-gray-400 focus:ring-gray-400 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             placeholder="Enter a ZIP code..."
           />
@@ -73,6 +83,9 @@ export function GeolocationInput() {
       )}
       {errorMessage && (
         <div className="mt-1 text-sm text-red-500">{errorMessage}</div>
+      )}
+      {validationError && (
+        <div className="mt-1 text-sm text-red-500">{validationError}</div>
       )}
     </div>
   );
