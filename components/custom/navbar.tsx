@@ -1,6 +1,6 @@
 'use client';
 
-import { LocationInput } from '@/components/custom/location-input';
+import { GeolocationInput } from '@/components/custom/geolocation-input';
 import { SortOptions } from '@/components/custom/sort-options';
 import { ThemeSelector } from '@/components/custom/theme-selector';
 import { Button } from '@/components/ui/button';
@@ -31,7 +31,7 @@ export function Navbar() {
             <SheetTitle />
             <div className="mt-6 flex flex-col space-y-4">
               <h2 className="text-lg font-semibold">Location</h2>
-              <LocationInput />
+              <GeolocationInput />
             </div>
             <div className="mt-6 flex flex-col space-y-4">
               <h2 className="text-lg font-semibold">Sort Options</h2>

@@ -19,7 +19,9 @@ type GeolocationContextType = {
   userAllowedGeolocation: boolean;
   position: Coordinates;
   zipCode: number;
-  setZipCode: (zipCode: number) => void;
+  zipCodeLoading: boolean;
+  badZipCode: boolean;
+  handleZipCodeChange: (zipCode: number) => void;
 };
 
 const GeolocationContext = createContext<GeolocationContextType | undefined>(
@@ -32,15 +34,49 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     longitude: Infinity,
   });
   const [zipCode, setZipCode] = useState<number>(94103);
+  const [zipCodeLoading, setZipCodeLoading] = useState<boolean>(false);
+  const [badZipCode, setBadZipCode] = useState<boolean>(false);
   const [userAllowedGeolocation, setUserAllowedGeolocation] =
     useState<boolean>(false);
 
+  const handleZipCodeChange = (zipCode: number) => {
+    setZipCodeLoading(true);
+    fetch(
+      `https://nominatim.openstreetmap.org/search?country=us&postalcode=${zipCode}&format=jsonv2`,
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.length > 0) {
+          setZipCode(zipCode);
+          setBadZipCode(false);
+          setPosition({
+            latitude: data[0].lat,
+            longitude: data[0].lon,
+          });
+        } else {
+          setBadZipCode(true);
+        }
+      })
+      .finally(() => {
+        setZipCodeLoading(false);
+      });
+  };
+
   const geolocationSuccessCallback = (position: GeolocationPosition) => {
-    setUserAllowedGeolocation(true);
-    setPosition({
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    });
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=jsonv2`,
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setZipCode(data.address.postcode);
+        setUserAllowedGeolocation(true);
+        setPosition({
+          latitude,
+          longitude,
+        });
+      });
   };
 
   const geolocationErrorCallback = (error: GeolocationPositionError) => {
@@ -63,8 +99,10 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
       value={{
         position,
         zipCode,
+        zipCodeLoading,
+        badZipCode,
         userAllowedGeolocation,
-        setZipCode,
+        handleZipCodeChange,
       }}
     >
       {children}
