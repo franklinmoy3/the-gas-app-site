@@ -23,18 +23,6 @@ export function Footer({ className }: { className?: string }) {
         </a>
         .
       </p>
-      <p className="mb-1">
-        Location data &copy;{' '}
-        <a
-          className="underline"
-          href="https://www.openstreetmap.org/copyright"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          OpenStreetMap
-        </a>{' '}
-        contributors.
-      </p>
       <p className="mb-1">A hobby project by Franklin Moy.</p>
       <p className="mb-1">Proudly Open Source. Contributions welcome.</p>
       <div className="flex justify-center gap-2">

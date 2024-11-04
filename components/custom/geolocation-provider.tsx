@@ -8,20 +8,24 @@ import {
   useEffect,
 } from 'react';
 import { Coordinates } from '@/lib/greatCircleDistance';
+import { fetcher } from '@/lib/utils';
+import useSWR from 'swr';
 
 const defaultPosition: Coordinates = {
-  // We'll use San Francisco as the default location
-  latitude: 37.7749,
-  longitude: -122.4194,
+  // We'll use Chicago as the default location
+  latitude: 41.8781,
+  longitude: -87.6298,
 };
 
 type GeolocationContextType = {
   userAllowedGeolocation: boolean;
   position: Coordinates;
-  zipCode: number;
+  zipCode: string;
   zipCodeLoading: boolean;
+  invalidZipCode: boolean;
   errorMessage: string | null;
-  handleZipCodeChange: (zipCode: number) => void;
+  providerDisabled: boolean;
+  handleZipCodeChange: (zipCode: string) => void;
 };
 
 const GeolocationContext = createContext<GeolocationContextType | undefined>(
@@ -33,36 +37,42 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     latitude: Infinity,
     longitude: Infinity,
   });
-  const [zipCode, setZipCode] = useState<number>(94103);
-  const [zipCodeLoading, setZipCodeLoading] = useState<boolean>(false);
+  const [zipCode, setZipCode] = useState<string>('60606');
+  // Use the below state if we end up going back to API calls for each ZIP code coordinate req
+  // const [zipCodeLoading, setZipCodeLoading] = useState<boolean>(false);
+  const [invalidZipCode, setInvalidZipCode] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [providerDisabled, setProviderDisabled] = useState<boolean>(false);
   const [userAllowedGeolocation, setUserAllowedGeolocation] =
     useState<boolean>(false);
 
-  const handleZipCodeChange = (zipCode: number) => {
-    setZipCodeLoading(true);
-    // I don't really trust Nominatim since some of its answers were incorrect.
-    // We might need to build our own ZIP->coordinates database to be more accurate.
-    fetch(
-      `https://nominatim.openstreetmap.org/search?country=us&postalcode=${zipCode}&format=jsonv2`,
-      { cache: 'force-cache' },
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.length > 0) {
-          setZipCode(zipCode);
-          setErrorMessage(null);
-          setPosition({
-            latitude: data[0].lat,
-            longitude: data[0].lon,
-          });
-        } else {
-          setErrorMessage('Invalid ZIP code');
-        }
-      })
-      .finally(() => {
-        setZipCodeLoading(false);
+  // Nominatim reported incorrect coordinates for some ZIP codes, such as 12345.
+  // So we use our fork of a public dataset of ZIP code coordinates.
+  const { data, error, isLoading } = useSWR(
+    `https://raw.githubusercontent.com/franklinmoy3/US-ZIP-Codes-JSON/main/USCitiesMapped.json`,
+    fetcher,
+  );
+
+  if (error) {
+    setProviderDisabled(true);
+    setErrorMessage(
+      'Failed to connect to the geolocation service. Please refresh the page.',
+    );
+  }
+
+  const handleZipCodeChange = (zipCode: string) => {
+    if (zipCode in data) {
+      setZipCode(zipCode);
+      setErrorMessage(null);
+      setInvalidZipCode(false);
+      setPosition({
+        latitude: data[zipCode].latitude,
+        longitude: data[zipCode].longitude,
       });
+    } else {
+      setErrorMessage('Invalid ZIP code');
+      setInvalidZipCode(true);
+    }
   };
 
   const geolocationSuccessCallback = (position: GeolocationPosition) => {
@@ -103,8 +113,10 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
       value={{
         position,
         zipCode,
-        zipCodeLoading,
+        zipCodeLoading: isLoading,
+        invalidZipCode,
         errorMessage,
+        providerDisabled,
         userAllowedGeolocation,
         handleZipCodeChange,
       }}
