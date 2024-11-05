@@ -68,19 +68,25 @@ export function GasStationList() {
   const { position } = useGeolocationContext();
 
   useEffect(() => {
+    let isMounted = true;
     fetch(
       'https://raw.githubusercontent.com/franklinmoy3/the-gas-app-db/latest/prices.json',
     )
       .then((response) => response.json())
       .then((data) => {
-        setStations(sortStations(position, data, sortBy));
-        setLoading(false);
+        if (isMounted) {
+          setStations(sortStations(position, data, sortBy));
+          setLoading(false);
+        }
       })
       .catch((error) => {
         console.error('Error fetching gas stations:', error);
         setError('Something went wrong. Please try again later.');
         setLoading(false);
       });
+    return () => {
+      isMounted = false;
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

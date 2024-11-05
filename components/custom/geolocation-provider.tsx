@@ -53,12 +53,14 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     fetcher,
   );
 
-  if (error) {
-    setProviderDisabled(true);
-    setErrorMessage(
-      'Failed to connect to the geolocation service. Please refresh the page.',
-    );
-  }
+  useEffect(() => {
+    if (error) {
+      setProviderDisabled(true);
+      setErrorMessage(
+        'Failed to connect to the geolocation service. Please refresh the page.',
+      );
+    }
+  }, [error]);
 
   const handleZipCodeChange = (zipCode: string) => {
     if (zipCode in data) {
