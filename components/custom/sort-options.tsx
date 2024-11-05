@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { useGasStationSortContext } from '@/components/custom/gas-station-sort-provider';
 
 const sortOptions = [
-  { value: 'name', label: 'Name' },
+  { value: 'distance', label: 'Distance' },
   { value: 'price', label: 'Price (Low to High)' },
   { value: 'price-desc', label: 'Price (High to Low)' },
 ];

@@ -10,7 +10,7 @@ const GasStationSortContext = createContext<
 >(undefined);
 
 export function GasStationSortProvider({ children }: { children: ReactNode }) {
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState('distance');
 
   return (
     <GasStationSortContext.Provider value={{ sortBy, setSortBy }}>
