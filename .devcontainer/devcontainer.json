@@ -28,6 +28,7 @@
         "editorconfig.editorconfig",
         "esbenp.prettier-vscode",
         "github.vscode-github-actions",
+        "postman.postman-for-vscode",
         "yzhang.markdown-all-in-one"
       ]
     }
