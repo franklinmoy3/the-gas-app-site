@@ -13,8 +13,22 @@ export function Footer({ className }: { className?: string }) {
       </p>
       <p className="mb-2 mt-1 text-sm text-muted-foreground">
         Geolocation data provided by{' '}
-        <a className="underline" href="https://www.geonames.org">
+        <a
+          className="underline"
+          href="https://www.geonames.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Geonames
+        </a>{' '}
+        and{' '}
+        <a
+          className="underline"
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          OpenStreetMap
         </a>
         .
       </p>
