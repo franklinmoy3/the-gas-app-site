@@ -47,9 +47,9 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     useState<boolean>(false);
 
   // Nominatim reported incorrect coordinates for some ZIP codes, such as 12345.
-  // So we use our fork of a public dataset of ZIP code coordinates.
+  // So we use our fork of Geonames Gazeerter geocoding data.
   const { data, error, isLoading } = useSWR(
-    `https://raw.githubusercontent.com/franklinmoy3/US-ZIP-Codes-JSON/main/USCitiesMapped.json`,
+    `https://raw.githubusercontent.com/franklinmoy3/US-Zip-Code-Geocoding/main/data/US-condensed-mapped.json`,
     fetcher,
   );
 

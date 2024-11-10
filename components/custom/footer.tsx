@@ -12,6 +12,17 @@ export function Footer({ className }: { className?: string }) {
         and might be different at the pump.
       </p>
       <p className="mb-2 mt-1 text-sm text-muted-foreground">
+        Geolocation data provided by{' '}
+        <a className="underline" href="https://www.geonames.org">
+          Geonames
+        </a>
+        .
+      </p>
+      <p className="text-md mb-1">A hobby project by Franklin Moy.</p>
+      <p className="text-md mb-1">
+        Proudly Open Source. Contributions welcome.
+      </p>
+      <p className="text-md mb-1">
         Is your Costco or Sam&apos;s Club missing? Let me know on{' '}
         <a
           className="underline"
@@ -23,8 +34,6 @@ export function Footer({ className }: { className?: string }) {
         </a>
         .
       </p>
-      <p className="mb-1">A hobby project by Franklin Moy.</p>
-      <p className="mb-1">Proudly Open Source. Contributions welcome.</p>
       <div className="flex justify-center gap-2">
         <a
           href="https://github.com/franklinmoy3/the-gas-app-site"
