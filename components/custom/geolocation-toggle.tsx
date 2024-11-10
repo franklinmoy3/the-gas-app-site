@@ -17,6 +17,7 @@ export function GeolocationToggle() {
     <div className="mb-4 flex items-center">
       <Checkbox
         id="geolocation-toggle"
+        aria-label="Use My Location"
         checked={useUserLocation}
         onCheckedChange={handleUseUserLocationChange}
         className="mr-2"
