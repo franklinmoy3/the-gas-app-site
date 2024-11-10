@@ -4,6 +4,7 @@ import {
   createContext,
   ReactNode,
   useContext,
+  useRef,
   useState,
   useEffect,
 } from 'react';
@@ -19,12 +20,14 @@ const defaultPosition: Coordinates = {
 
 type GeolocationContextType = {
   userAllowedGeolocation: boolean;
+  useUserLocation: boolean;
   position: Coordinates;
   zipCode: string;
   zipCodeLoading: boolean;
   invalidZipCode: boolean;
   errorMessage: string | null;
   providerDisabled: boolean;
+  handleUseUserLocationChange: (useUserLocation: boolean) => void;
   handleZipCodeChange: (zipCode: string) => void;
 };
 
@@ -38,6 +41,8 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     longitude: Infinity,
   });
   const [zipCode, setZipCode] = useState<string>('60606');
+  const [useUserLocation, setUseUserLocation] = useState<boolean>(false);
+  const userZipCode = useRef<string | null>(null);
   // Use the below state if we end up going back to API calls for each ZIP code coordinate req
   // const [zipCodeLoading, setZipCodeLoading] = useState<boolean>(false);
   const [invalidZipCode, setInvalidZipCode] = useState<boolean>(false);
@@ -77,6 +82,13 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const handleUseUserLocationChange = (useUserLocation: boolean) => {
+    if (userZipCode.current) {
+      handleZipCodeChange(userZipCode.current);
+      setUseUserLocation(useUserLocation);
+    }
+  };
+
   const geolocationSuccessCallback = (position: GeolocationPosition) => {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
@@ -88,6 +100,8 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
       .then((data) => {
         setZipCode(data.address.postcode);
         setUserAllowedGeolocation(true);
+        userZipCode.current = data.address.postcode;
+        setUseUserLocation(true);
         setPosition({
           latitude,
           longitude,
@@ -113,13 +127,15 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   return (
     <GeolocationContext.Provider
       value={{
+        userAllowedGeolocation,
+        useUserLocation,
         position,
         zipCode,
         zipCodeLoading: isLoading,
         invalidZipCode,
         errorMessage,
         providerDisabled,
-        userAllowedGeolocation,
+        handleUseUserLocationChange,
         handleZipCodeChange,
       }}
     >

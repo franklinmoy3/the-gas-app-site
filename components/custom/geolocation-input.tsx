@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon, UpdateIcon } from '@radix-ui/react-icons';
+import { GeolocationToggle } from '@/components/custom/geolocation-toggle';
 
 export function GeolocationInput() {
   const {
@@ -16,6 +17,7 @@ export function GeolocationInput() {
     errorMessage,
     providerDisabled,
     handleZipCodeChange,
+    handleUseUserLocationChange,
   } = useGeolocationContext();
   const [value, setValue] = useState<string>(zipCode);
   const [badInput, setBadInput] = useState<boolean>(false);
@@ -28,6 +30,7 @@ export function GeolocationInput() {
     e.preventDefault();
     setBadInput(false);
     if (!zipCodeLoading) {
+      handleUseUserLocationChange(false);
       handleZipCodeChange(value);
     }
   };
@@ -51,6 +54,7 @@ export function GeolocationInput() {
           "We couldn't get your location.\nPlease enter your ZIP code:"}
         {position.latitude === Infinity && 'Loading...'}
       </div>
+      <GeolocationToggle />
       {position.latitude !== Infinity && (
         <form onSubmit={handleSubmit} className="relative mt-1 max-w-sm">
           <Input
