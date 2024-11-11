@@ -4,34 +4,36 @@ import { cn } from '@/lib/utils';
 export function Footer({ className }: { className?: string }) {
   return (
     <footer className={cn('border-t bg-background p-4 text-center', className)}>
-      <p className="text-sm text-muted-foreground">
-        Prices listed are{' '}
-        <strong>
-          <em>per gallon</em>
-        </strong>{' '}
-        and might be different at the pump.
-      </p>
-      <p className="mb-2 mt-1 text-sm text-muted-foreground">
-        Geolocation data provided by{' '}
-        <a
-          className="underline"
-          href="https://www.geonames.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Geonames
-        </a>{' '}
-        and{' '}
-        <a
-          className="underline"
-          href="https://www.openstreetmap.org/copyright"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          OpenStreetMap
-        </a>
-        .
-      </p>
+      <div className="mb-2">
+        <p className="text-sm text-muted-foreground">
+          Prices listed are{' '}
+          <strong>
+            <em>per gallon</em>
+          </strong>{' '}
+          and might be different at the pump.
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Geolocation data provided by{' '}
+          <a
+            className="underline"
+            href="https://www.geonames.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GeoNames
+          </a>{' '}
+          and{' '}
+          <a
+            className="underline"
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OpenStreetMap
+          </a>
+          .
+        </p>
+      </div>
       <p className="text-md mb-1">A hobby project by Franklin Moy.</p>
       <p className="text-md mb-1">
         Proudly Open Source. Contributions welcome.
