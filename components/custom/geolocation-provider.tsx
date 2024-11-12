@@ -42,6 +42,10 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   });
   const [zipCode, setZipCode] = useState<string>('60606');
   const [useUserLocation, setUseUserLocation] = useState<boolean>(false);
+  const userPosition = useRef<Coordinates>({
+    latitude: Infinity,
+    longitude: Infinity,
+  });
   const userZipCode = useRef<string | null>(null);
   // Use the below state if we end up going back to API calls for each ZIP code coordinate req
   // const [zipCodeLoading, setZipCodeLoading] = useState<boolean>(false);
@@ -85,6 +89,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   const handleUseUserLocationChange = (useUserLocation: boolean) => {
     if (userZipCode.current) {
       handleZipCodeChange(userZipCode.current);
+      setPosition(userPosition.current);
       setUseUserLocation(useUserLocation);
     }
   };
@@ -98,14 +103,12 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     )
       .then((res) => res.json())
       .then((data) => {
-        setZipCode(data.address.postcode);
         setUserAllowedGeolocation(true);
-        userZipCode.current = data.address.postcode;
         setUseUserLocation(true);
-        setPosition({
-          latitude,
-          longitude,
-        });
+        userZipCode.current = data.address.postcode;
+        setZipCode(data.address.postcode);
+        userPosition.current = { latitude, longitude };
+        setPosition({ latitude, longitude });
       });
   };
 
