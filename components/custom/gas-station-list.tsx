@@ -8,6 +8,7 @@ import { LoadingSpinner } from '@/components/custom/loading-spinner';
 import {
   Coordinates,
   computeGreatCircleDistance,
+  kmToMi,
 } from '@/lib/greatCircleDistance';
 import { useGeolocationContext } from '@/components/custom/geolocation-provider';
 
@@ -57,6 +58,22 @@ function sortStations(
   });
 }
 
+function filterStations(
+  position: Coordinates | null | undefined,
+  stations: GasStation[],
+  searchRadiusMiles: number,
+) {
+  return stations.filter((station) => {
+    if (position) {
+      const distance = computeGreatCircleDistance(position, {
+        latitude: station.latitude,
+        longitude: station.longitude,
+      });
+      return kmToMi(distance) <= searchRadiusMiles;
+    }
+  });
+}
+
 export function GasStationList() {
   const [stations, setStations] = useState<GasStation[]>([]);
   const [sortedStations, setSortedStations] = useState<GasStation[]>([]);
@@ -64,7 +81,7 @@ export function GasStationList() {
   const visibleStationsCount = useRef(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { sortBy } = useGasStationSortContext();
+  const { sortBy, searchRadiusMiles } = useGasStationSortContext();
   const { position } = useGeolocationContext();
 
   useEffect(() => {
@@ -90,9 +107,18 @@ export function GasStationList() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const stationsSorted = sortStations(position, [...stations], sortBy);
+    const filteredStations = filterStations(
+      position,
+      [...stations],
+      searchRadiusMiles,
+    );
+    const stationsSorted = sortStations(
+      position,
+      [...filteredStations],
+      sortBy,
+    );
     setSortedStations(stationsSorted);
-  }, [position, stations, sortBy]);
+  }, [position, stations, sortBy, searchRadiusMiles]);
 
   useEffect(() => {
     setVisibleStations(sortedStations.slice(0, visibleStationsCount.current));

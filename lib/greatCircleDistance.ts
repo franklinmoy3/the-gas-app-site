@@ -29,3 +29,7 @@ export function computeGreatCircleDistance(
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return earthRadiusKm * c;
 }
+
+export function kmToMi(km: number) {
+  return km * 0.62137119;
+}
