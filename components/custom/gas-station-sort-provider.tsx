@@ -33,7 +33,7 @@ const GasStationSortContext = createContext<
 
 export function GasStationSortProvider({ children }: { children: ReactNode }) {
   const [sortBy, setSortBy] = useState('distance');
-  const [searchRadiusMiles, setSearchRadiusMiles] = useState<number>(10);
+  const [searchRadiusMiles, setSearchRadiusMiles] = useState<number>(25);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [availableDates, setAvailableDates] = useState<string[]>([]);
 
