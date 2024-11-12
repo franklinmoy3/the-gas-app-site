@@ -42,7 +42,12 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   });
   const [zipCode, setZipCode] = useState<string>('60606');
   const [useUserLocation, setUseUserLocation] = useState<boolean>(false);
-  const userZipCode = useRef<string | null>(null);
+  const userPosition = useRef<Coordinates>({
+    latitude: Infinity,
+    longitude: Infinity,
+  });
+  // NOTE: Let's not deal with reverse geocoding. It's a nice to have but the user won't care
+  //   if we already have an indicator that shows if we're using their location instead.
   // Use the below state if we end up going back to API calls for each ZIP code coordinate req
   // const [zipCodeLoading, setZipCodeLoading] = useState<boolean>(false);
   const [invalidZipCode, setInvalidZipCode] = useState<boolean>(false);
@@ -52,7 +57,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     useState<boolean>(false);
 
   // Nominatim reported incorrect coordinates for some ZIP codes, such as 12345.
-  // So we use our fork of Geonames Gazeerter geocoding data.
+  // So we use our fork of GeoNames Gazeeter geocoding data.
   const { data, error, isLoading } = useSWR(
     `https://raw.githubusercontent.com/franklinmoy3/US-Zip-Code-Geocoding/main/data/US-condensed-mapped.json`,
     fetcher,
@@ -83,30 +88,19 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   };
 
   const handleUseUserLocationChange = (useUserLocation: boolean) => {
-    if (userZipCode.current) {
-      handleZipCodeChange(userZipCode.current);
-      setUseUserLocation(useUserLocation);
+    if (useUserLocation) {
+      setPosition(userPosition.current);
     }
+    setUseUserLocation(useUserLocation);
   };
 
   const geolocationSuccessCallback = (position: GeolocationPosition) => {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=jsonv2`,
-      { cache: 'force-cache' },
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setZipCode(data.address.postcode);
-        setUserAllowedGeolocation(true);
-        userZipCode.current = data.address.postcode;
-        setUseUserLocation(true);
-        setPosition({
-          latitude,
-          longitude,
-        });
-      });
+    setUserAllowedGeolocation(true);
+    setUseUserLocation(true);
+    userPosition.current = { latitude, longitude };
+    setPosition({ latitude, longitude });
   };
 
   const geolocationErrorCallback = (error: GeolocationPositionError) => {
