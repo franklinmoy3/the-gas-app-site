@@ -12,7 +12,6 @@ Some features include:
 
 ![Screenshot of The Gas App](https://github.com/user-attachments/assets/f7265761-9039-4ea0-9ef6-64ba6cb4f0a0)
 
-
 ## Table of Contents <!-- omit in toc -->
 
 - [Contributing](#contributing)
