@@ -207,7 +207,7 @@ export function GasStationList() {
           </Card>
         ))}
       </div>
-      {visibleStations.length < stations.length && (
+      {visibleStations.length < sortedStations.length && (
         <div className="mt-6 text-center">
           <Button onClick={loadMore}>Load More</Button>
         </div>
