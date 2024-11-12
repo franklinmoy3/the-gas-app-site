@@ -7,8 +7,8 @@ export function Sidebar({ className }: { className?: string }) {
   return (
     <aside className={cn('w-64 border-r bg-background p-6', className)}>
       <GeolocationInput />
-      <SortOptions />
       <PriceHistoryCalendar />
+      <SortOptions />
     </aside>
   );
 }

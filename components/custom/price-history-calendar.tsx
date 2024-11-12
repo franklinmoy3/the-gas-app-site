@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -10,29 +9,11 @@ import {
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-
-const today = new Date();
+import { useGasStationSortContext } from './gas-station-sort-provider';
 
 export function PriceHistoryCalendar() {
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetch(
-      'https://api.github.com/repos/franklinmoy3/the-gas-app-db/git/refs/tags',
-      {
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-        cache: 'default',
-      },
-    )
-      .then((resp) => resp.json())
-      .then((data) => {
-        const dates = data.map((tag) => tag.ref.split('/')[2]);
-        setAvailableDates(dates);
-      });
-  }, []);
+  const { availableDates, selectedDate, setSelectedDate } =
+    useGasStationSortContext();
 
   return (
     <div className="mt-6 flex flex-col space-y-2">

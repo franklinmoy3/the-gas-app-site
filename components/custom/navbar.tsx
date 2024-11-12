@@ -31,8 +31,8 @@ export function Navbar() {
           <SheetContent side="right" aria-describedby={undefined}>
             <SheetTitle />
             <GeolocationInput />
-            <SortOptions />
             <PriceHistoryCalendar />
+            <SortOptions />
             <div className="mt-6 flex flex-row items-center gap-2">
               <p className="text-sm">Theme: </p>
               <ThemeSelector buttonVariant={'outline'} dropdownAlign="start" />

@@ -11,6 +11,7 @@ import {
   kmToMi,
 } from '@/lib/greatCircleDistance';
 import { useGeolocationContext } from '@/components/custom/geolocation-provider';
+import { format } from 'date-fns';
 
 interface PriceInfo {
   timestamp: number;
@@ -81,30 +82,50 @@ export function GasStationList() {
   const visibleStationsCount = useRef(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { sortBy, searchRadiusMiles } = useGasStationSortContext();
+  const { sortBy, searchRadiusMiles, selectedDate, setSelectedDate } =
+    useGasStationSortContext();
   const { position } = useGeolocationContext();
 
   useEffect(() => {
     let isMounted = true;
-    fetch(
-      'https://raw.githubusercontent.com/franklinmoy3/the-gas-app-db/latest/prices.json',
-    )
-      .then((response) => response.json())
-      .then((data) => {
+    setLoading(true);
+    const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `https://raw.githubusercontent.com/franklinmoy3/the-gas-app-db/${formattedDate}/prices.json`,
+        );
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            // Calculate previous day and update selectedDate
+            const previousDay = new Date(selectedDate);
+            previousDay.setDate(previousDay.getDate() - 1);
+            setSelectedDate(previousDay);
+            return; // This will trigger a re-render with the new date
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
         if (isMounted) {
           setStations(sortStations(position, data, sortBy));
           setLoading(false);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error fetching gas stations:', error);
         setError('Something went wrong. Please try again later.');
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
+
     return () => {
       isMounted = false;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const filteredStations = filterStations(
