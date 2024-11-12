@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
+import { PriceHistoryCalendar } from '@/components/custom/price-history-calendar';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +32,7 @@ export function Navbar() {
             <SheetTitle />
             <GeolocationInput />
             <SortOptions />
+            <PriceHistoryCalendar />
             <div className="mt-6 flex flex-row items-center gap-2">
               <p className="text-sm">Theme: </p>
               <ThemeSelector buttonVariant={'outline'} dropdownAlign="start" />
