@@ -75,6 +75,9 @@ function filterStations(
   });
 }
 
+const noResultsMessage =
+  'No results matching your filters. Try changing your filter options.';
+
 export function GasStationList() {
   const [stations, setStations] = useState<GasStation[]>([]);
   const [sortedStations, setSortedStations] = useState<GasStation[]>([]);
@@ -183,6 +186,10 @@ export function GasStationList() {
 
   if (error) {
     return <div className="text-center">{error}</div>;
+  }
+
+  if (sortedStations.length < 1) {
+    return <div className="text-center">{noResultsMessage}</div>;
   }
 
   return (
