@@ -110,7 +110,7 @@ export function GasStationList() {
     if (!priceInfo) {
       return 'N/A';
     } else {
-      return `${currencySymbol}${priceInfo.price}`;
+      return `${currencySymbol}${priceInfo.price.toFixed(2)}`;
     }
   };
 
