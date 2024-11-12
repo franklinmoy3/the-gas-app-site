@@ -6,6 +6,17 @@ import {
   useEffect,
 } from 'react';
 
+type GitHubRefDetailType = {
+  ref: string;
+  node_id: string;
+  url: string;
+  object: {
+    type: string;
+    sha: string;
+    url: string;
+  };
+};
+
 type GasStationSortContextType = {
   sortBy: string;
   searchRadiusMiles: number;
@@ -38,7 +49,9 @@ export function GasStationSortProvider({ children }: { children: ReactNode }) {
     )
       .then((resp) => resp.json())
       .then((data) => {
-        const dates = data.map((tag) => tag.ref.split('/')[2]);
+        const dates = data.map(
+          (tag: GitHubRefDetailType) => tag.ref.split('/')[2],
+        );
         setAvailableDates(dates);
       });
   }, []);
