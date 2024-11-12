@@ -21,15 +21,6 @@ export function Footer({ className }: { className?: string }) {
             rel="noopener noreferrer"
           >
             GeoNames
-          </a>{' '}
-          and{' '}
-          <a
-            className="underline"
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OpenStreetMap
           </a>
           .
         </p>
