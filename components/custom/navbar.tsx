@@ -19,7 +19,7 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b bg-background p-4">
       <div className="container mx-auto flex items-center justify-between">
-        <h1 className="text-2xl font-bold">The Gas App</h1>
+        <label className="text-2xl font-bold">The Gas App</label>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
