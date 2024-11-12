@@ -29,14 +29,8 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" aria-describedby={undefined}>
             <SheetTitle />
-            <div className="mt-6 flex flex-col space-y-4">
-              <h2 className="text-lg font-semibold">Location</h2>
-              <GeolocationInput />
-            </div>
-            <div className="mt-6 flex flex-col space-y-4">
-              <h2 className="text-lg font-semibold">Sort Options</h2>
-              <SortOptions />
-            </div>
+            <GeolocationInput />
+            <SortOptions />
             <div className="mt-6 flex flex-row items-center gap-2">
               <p className="text-sm">Theme: </p>
               <ThemeSelector buttonVariant={'outline'} dropdownAlign="start" />

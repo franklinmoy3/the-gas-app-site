@@ -47,14 +47,20 @@ export function GeolocationInput() {
   };
 
   return (
-    <div>
-      <div className="text-sm">
-        {!userAllowedGeolocation &&
-          position.latitude !== Infinity &&
-          !providerDisabled &&
-          "We couldn't get your location.\nPlease enter a ZIP code:"}
-        {position.latitude === Infinity && 'Loading...'}
-      </div>
+    <div className="mt-6 flex flex-col space-y-4">
+      <label className="text-lg font-semibold">Location</label>
+      {!userAllowedGeolocation &&
+        position.latitude !== Infinity &&
+        !providerDisabled && (
+          <label className="text-sm">
+            We couldn&apos;t get your location.
+            <br />
+            Please enter a ZIP code:
+          </label>
+        )}
+      {position.latitude === Infinity && (
+        <label className="text-sm">Loading...</label>
+      )}
       <GeolocationToggle />
       {position.latitude !== Infinity && (
         <form onSubmit={handleSubmit} className="mt-1 max-w-sm">
