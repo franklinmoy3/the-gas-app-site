@@ -56,8 +56,8 @@ export function SortOptions() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div>
-        <label className="text-lg font-semibold">Sort Options</label>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold">Sort Options</label>
         <RadioGroup value={sortBy} onValueChange={setSortBy}>
           {sortOptions.map((option) => (
             <div key={option.value} className="flex items-center space-x-2">
