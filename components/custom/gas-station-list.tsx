@@ -85,8 +85,13 @@ export function GasStationList() {
   const visibleStationsCount = useRef(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { sortBy, searchRadiusMiles, selectedDate, setSelectedDate } =
-    useGasStationSortContext();
+  const {
+    sortBy,
+    searchRadiusMiles,
+    selectedDate,
+    setSelectedDate,
+    availableDates,
+  } = useGasStationSortContext();
   const { position } = useGeolocationContext();
 
   useEffect(() => {
@@ -102,10 +107,12 @@ export function GasStationList() {
 
         if (!response.ok) {
           if (response.status === 404) {
-            // Calculate previous day and update selectedDate
-            const previousDay = new Date(selectedDate);
-            previousDay.setDate(previousDay.getDate() - 1);
-            setSelectedDate(previousDay);
+            // Fall back to the latest available date
+            if (availableDates && availableDates.length) {
+              const latest_price_date =
+                availableDates[availableDates.length - 1];
+              setSelectedDate(new Date(latest_price_date));
+            }
             return; // This will trigger a re-render with the new date
           }
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -123,12 +130,15 @@ export function GasStationList() {
       }
     };
 
-    fetchData();
+    // Should wait until we get all available price dates before making API calls
+    if (availableDates && availableDates.length) {
+      fetchData();
+    }
 
     return () => {
       isMounted = false;
     };
-  }, [selectedDate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedDate, availableDates]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const filteredStations = filterStations(
